@@ -1,0 +1,33 @@
+const int M=1e9+7;
+void dfs(int v, int p, vector<int> G[], vector<int>&subsum, vector<int> &A)
+{
+    subsum[v]=A[v-1];
+    for(auto child : G[v])
+    {
+        if(child==p)
+            continue;
+        dfs(child, v, G, subsum, A);
+        subsum[v]+=subsum[child];
+    }
+}
+int Solution::deleteEdge(vector<int> &A, vector<vector<int> > &B) {
+    int n=A.size();
+    vector<int>G[n+1];
+    vector<int>subsum(n+1, 0);
+
+    for(auto edge: B)
+    {
+        G[edge[0]].push_back(edge[1]);
+        G[edge[1]].push_back(edge[0]);
+    }
+    dfs(1, 0, G, subsum, A);
+    long long ans=0;
+    for(int i=2; i<=n; i++)
+    {
+        int part1=subsum[i];
+        int part2=subsum[1]-subsum[i];
+        ans=max(ans, (part1 * 1ll * part2) );
+    }
+    return ans%M;
+}
+
