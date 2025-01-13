@@ -1,0 +1,83 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+int lev[8][8];
+bool vis[8][8];
+vector<pair<int,int>>moves={
+    {1,2}, {1,-2}, {-1,2}, {-1,-2},
+    {2,1}, {2,-1}, {-2,1}, {-2,-1} 
+};
+
+bool valid(int x, int y)
+{
+    if(x<0 || y<0 || x>=8 || y>=8)
+        return false;
+    else
+        return true;
+}
+
+int getX(string s)
+{
+    return s[0]-'a';
+}
+int getY(string s)
+{
+    return s[1]-'1';
+}
+void reset()
+{
+    for(int i=0; i<8; i++)
+    {
+        for(int j=0; j<8; j++)
+        {
+            lev[i][j]=0;
+            vis[i][j]=false;
+        }
+    }
+}
+
+int bfs(string s, string d)
+{
+    int sX=getX(s), sY=getY(s);
+    int dX=getX(d), dY=getY(d);
+
+    vis[sX][sY]=true;
+    lev[sX][sY]=0;
+    lev[dX][dY]=-1;
+    queue<pair<int,int>>q;
+    q.push({sX, sY});
+
+    while(!q.empty())
+    {
+        auto p=q.front();
+        q.pop();
+        int x=p.first, y=p.second;
+        for(auto move : moves)
+        {
+            int cX=move.first+x, cY=move.second+y;
+            if(!valid(cX, cY)) continue;
+            if(vis[cX][cY]) continue;
+
+            q.push({cX, cY});
+            vis[cX][cY]=true;
+            lev[cX][cY]=lev[x][y]+1;
+
+        }
+        if(lev[dX][dY]!=-1)
+            return lev[dX][dY];
+    }
+    return lev[dX][dY];
+}
+int main()
+{
+    ll tt;
+    cin >> tt;
+
+    while(tt--)
+    {
+        string a, b;
+        cin >> a >> b;
+        reset();
+        cout<< bfs(a, b) << endl;
+    }
+}
