@@ -1,0 +1,82 @@
+class Solution {
+public:
+
+    const static int N=1e3+1;
+    int INF=1e9+10;
+    int lev[N][N];
+    bool vis[N][N];
+    void reset()
+    {
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<m; j++)
+                lev[i][j]=-1;
+        }
+    }
+    int n,m;
+    bool valid(int x, int y)
+    {
+        return (x>=0 && y>=0 && x<n && y<m);
+    }
+
+    vector<pair<int, int>> moves={
+        {0,1}, {0,-1}, {1,0}, {-1,0}
+    };
+
+    int bfs(vector<vector<int>>& grid)
+    {
+        queue<pair<int, int>> q;
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<m; j++)
+            {
+                if(grid[i][j]==2)
+                {
+                    q.push({i,j});
+                    vis[i][j]=true;
+                    lev[i][j]=0;
+                }
+                if(grid[i][j]==0)
+                    vis[i][j]=true;
+            }
+        }
+        while(!q.empty())
+        {
+            auto p=q.front();
+            int x=p.first, y=p.second;
+            q.pop();
+
+            for(auto move : moves)
+            {
+                int cx=move.first+x, cy=move.second+y;
+                if(!valid(cx, cy))
+                    continue;
+                if(vis[cx][cy])
+                    continue;
+                q.push({cx, cy});
+                vis[cx][cy]=true;
+                lev[cx][cy]=lev[x][y]+1;
+            }
+        }
+        int ans=0;
+        for(int i=0; i<n; i++)
+        {
+            for(int j=0; j<m; j++)
+            {   
+                if(!vis[i][j])
+                    return -1;
+                ans=max(ans, lev[i][j]);
+            }
+        }
+        return ans;
+
+    }
+
+    int orangesRotting(vector<vector<int>>& grid) {
+        n=grid.size();
+        m=grid[0].size();
+        reset();
+        int ans=bfs(grid);
+        return ans;
+    }
+};
