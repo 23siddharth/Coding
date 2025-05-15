@@ -1,0 +1,51 @@
+int ub(vector<int> &a, int x)
+    {
+        int n=a.size();
+        int lo=0, hi=n-1;
+        int ans=n;
+        while(lo<=hi)
+        {
+            int mid=(lo+hi)/2;
+            if(a[mid]>x)
+            {
+                ans=mid;
+                hi=mid-1;
+            }
+            else
+            {
+                lo=mid+1;
+            }
+        }
+        return ans;
+    }
+    int less(vector<vector<int>> &a, int x)
+    {
+        int ans=0;
+        int n=a.size();
+        for(int i=0; i<n; i++)
+            ans+=ub(a[i], x);
+        return ans;
+    }
+    int median(vector<vector<int>> &a) {
+        // code here
+        int n=a.size(), m=a[0].size();
+        int hi=INT_MIN, lo=INT_MAX;
+        for(int i=0; i<n; i++)
+        {
+            hi=max(hi, a[n-1][i]);
+            lo=min(lo, a[0][i]);
+        }
+        int ans=-1;
+        while(lo<=hi)
+        {
+            int mid=(hi+lo)/2;
+            if(less(a, mid)>(n*m)/2)
+            {
+                ans=mid;
+                hi=mid-1;
+            }
+            else
+                lo=mid+1;
+        }
+        return ans;
+    }
